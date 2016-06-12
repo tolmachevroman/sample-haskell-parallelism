@@ -1,6 +1,3 @@
-# sample-haskell-parallelism
-An example of parallelising a program using the standard Eval Monad
-
 Haskell is known for it’s exceptional support for parallelising programs. Being highly abstract, pure and lazy means that using Haskell one can construct some meaningful stuff in a few lines of code, be aware of any probable side effects and let the runtime distribute the computational load. This latter, however, also brings some subtle problems with _evaluation_, when one may end up with a bunch of weakly evaluated _thunks_ causing space leaks and affecting overall performance. 
 
 Overall, optimising a program so that it can benefit from parallelising is a beautiful craftsmanship, since it depends deeply on the algorithms used, the input data and the output desired.  
@@ -198,18 +195,20 @@ This seems like a fairly low improvement rate, less then 2 times on 4 cores! Adm
 
 [Amdahl’s law](https://en.wikipedia.org/wiki/Amdahl%27s_law) can tell us. The logic is to separate sequential and parallelised parts, and obviously the whole program won’t run faster than the sequential part. Then it can be shown mathematically that adding whatever number of processors to the parallel part has a speed up limitation.  
 
-`image`
+![](https://cloud.githubusercontent.com/assets/560815/15988066/dd9e08bc-3010-11e6-919e-d2c3de7a2a98.png)
+
+, where `p` is a portion of the program that can be parallelised, and `n` is a number of cores. 
 
 Looking into the example above, the parallel part is calculating mapped functions, and the sequential one is calculating the final sum going through the whole list. On one core, that second part takes about 20% of the whole computation time. I measured it by running a simple program calculating sum of the same sized list. That means that the parallelised portion is about 80%. Which in turn leads us to
 
-`image`
+![](https://cloud.githubusercontent.com/assets/560815/15988065/dd986a56-3010-11e6-8554-86355fd3b2da.png)
 
 , 2.5 maximum speed up on 4 cores.
 
 Probably, playing with some finer grain control stuff like `Par` Monad would bring us somewhat closer to that value; probably I just miscalculated the parallelised portion and the maximum speed up is lower.
 
-[ThreadScope](https://wiki.haskell.org/ThreadScope) shows that 1 core of 4 is occupied managing the spark pool and doing garbage collection: 
+[ThreadScope](https://wiki.haskell.org/ThreadScope) shows that 1 core (`HEC 0`) of 4 is occupied managing the spark pool and doing garbage collection: 
 
-`image`
+![](https://cloud.githubusercontent.com/assets/560815/15988064/dd97b1b0-3010-11e6-957a-e30b78c1d093.png)
 
 So while the computation is evenly distributed over all 4 cores, one core in particular manages the spark pool, which might not be the most efficient way. 
