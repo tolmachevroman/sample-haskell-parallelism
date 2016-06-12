@@ -2,7 +2,7 @@ Haskell is known for it’s exceptional support for parallelising programs. Bein
 
 Overall, optimising a program so that it can benefit from parallelising is a beautiful craftsmanship, since it depends deeply on the algorithms used, the input data and the output desired.  
 
-In the example below I tried to play with and understand the simplest form of parallel computation - a _deterministic_ one. This means that there are no side effects, and calculation of one element of the input list no affects calculation of any other element. This way one can confidently reason about the program, since there won’t be unexpected differences between running it on one or several cores.
+In the example below, based on the Chapter 2 of [Parallel and Concurrent Programming in Haskell book](http://chimera.labs.oreilly.com/books/1230000000929/pt01.html), I tried to play with and understand the simplest form of parallel computation - a _deterministic_ one. This means that there are no side effects, and calculation of one element of the input list no affects calculation of any other element. This way one can confidently reason about the program, since there won’t be unexpected differences between running it on one or several cores.
 
 So let’s say we have a function called `longComputation`, performing some mathematical calculations. In this particular case, it sequentially applies square root `n` times. We want to `map` this function over an input list and show the `sum` of the resulting list later:
 
