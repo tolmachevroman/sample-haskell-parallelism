@@ -57,7 +57,8 @@ Function terminated after 0.035 seconds.
 Now, let’s add some parallelism. We’ll use a function `parList :: Strategy a -> Strategy [a]` from `Control.Parallel.Strategies` which takes `Strategy` as an argument and evaluates each element of the list according to it. Since we need to fully evaluate each computation in parallel, we use `rdeepseq` from `Control.DeepSeq`
 
 ```
-import Control.DeepSeq import Control.Parallel.Strategies
+import Control.DeepSeq
+import Control.Parallel.Strategies
 
 --Square root function applied n times
 longComputation n = foldr (.) id (replicate n sqrt)
@@ -150,7 +151,8 @@ Again, looking at the _sparks_ one can see a better distribution using 4 cores. 
 Now, using `parList` one lets the system control how many sparks got created. In the example below we see some sparks `overflowed`, which means that overall spark number is probably too high. Let’s tinker with it and try to "chop" the list manually using a function `parListChunk :: Int -> Strategy a -> Strategy [a]` which gets one extra parameter compared to `parList`, a number of items per chunk.
   
 ```
-import Control.DeepSeq import Control.Parallel.Strategies
+import Control.DeepSeq
+import Control.Parallel.Strategies
 
 -- Looped n times sqrt function application
 longComputation n = foldr (.) id (replicate n sqrt)
